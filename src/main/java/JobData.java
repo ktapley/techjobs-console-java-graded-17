@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,6 +65,8 @@ public class JobData {
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
+        String caseSensitive = value.toLowerCase();
+
         // load data, if not already loaded
         loadData();
 
@@ -75,7 +76,7 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(caseSensitive)) {
                 jobs.add(row);
             }
         }
@@ -87,15 +88,25 @@ public class JobData {
      * Search all columns for the given term
      *
      * @param value The search term to look for
-     * @return      List of all jobs with at least one field containing the value
+     * @return List of all jobs with at least one field containing the value
      */
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
 
-        // load data, if not already loaded
+//         load data, if not already loaded
         loadData();
 
-        // TODO - implement this method
-        return null;
+       ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+       for (HashMap<String, String> row : allJobs) {
+           for (String column : row.keySet()){
+               String cellValue = row.get(column);
+               if (cellValue != null && cellValue.toLowerCase().contains(value.toLowerCase())) {
+                   jobs.add(row);
+                   break;
+               }
+           }
+       }
+       return jobs;
     }
 
     /**
